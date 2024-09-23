@@ -5,7 +5,7 @@ ENV APT_INSTALL="apt-get update && DEBIAN_FRONTEND=noninteractive apt-get instal
 
 # Install git and clone the And-Star-Project repository
 RUN sh -c "$APT_INSTALL git"
-WORKDIR /root/And-Star-Project
+WORKDIR /and-star
 RUN git clone https://github.com/Frederico-Messa/And-Star-Project .
 RUN git submodule update --init --recursive
 

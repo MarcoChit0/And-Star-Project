@@ -1,0 +1,5 @@
+
+ladder-at(p0)
+next-bwd(p1 p0)
+next-fwd(p0 p1)
+position(p0)
