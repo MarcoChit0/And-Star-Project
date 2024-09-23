@@ -4,7 +4,7 @@
 	branch = translator
 [submodule "dep/validator"]
 	path = dep/validator
-	url = https://github.com/Frederico-Messa/PRP-Scripts-for-And-Star
+	url = https://github.com/MarcoChit0/PRP-Scripts-for-And-Star
 	branch = validator
 [submodule "dep/compressor"]
 	path = dep/compressor
