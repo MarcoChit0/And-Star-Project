@@ -16,10 +16,3 @@ RUN make
 # Install Python, dependencies, and any additional tools
 RUN sh -c "$APT_INSTALL python3 python3-pip gap nauty"
 RUN python3 -m pip install --break-system-packages -r requirements.txt
-
-# Ensure the and-star-runner.py script is available in the /app directory
-WORKDIR /app
-COPY and-star.py /app/
-
-# Specify the entry point (optional, can be overridden when running the container)
-CMD ["python3", "/app/and-star.py"]
