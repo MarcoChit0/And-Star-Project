@@ -2,3 +2,4 @@
 /and_star
 domain.pddl
 problem.pddl
+*.states
