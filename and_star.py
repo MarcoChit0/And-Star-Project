@@ -1,11 +1,14 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 import tap
 import argcomplete
 import subprocess
 import resource
 import time
+
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 class ArgParsingNamespace(tap.Tap):
     domain_file_path: str
