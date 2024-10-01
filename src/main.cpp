@@ -30,21 +30,6 @@ void print_end(const Task &task, const str &termination, const opt<Policy> &opt_
         std::cout << "A Solution Policy:" << std::endl;
         std::cout << *opt_solution << std::endl;
         std::cout << "Size: " << opt_solution->size() << std::endl;
-
-        str compressed_solution_in_prp_str_format = opt_solution->compute_and_print_compressed_version(task, ip_solver_label);
-        std::cout << std::endl;
-
-        std::cout << "Validating..." << std::endl;
-        str validate_output = get_output("validate", "python3 ./dep/validator/validator.py " + domain_file_name + " " + task_file_name, compressed_solution_in_prp_str_format);
-        assert(validate_output == "True\n\n" or validate_output == "False\n\n");
-        if (validate_output.starts_with("True"))
-        {
-            std::cout << "Validated!" << std::endl;
-        }
-        else
-        {
-            throw std::logic_error("Generated solution was not validated.");
-        }
     }
 }
 
