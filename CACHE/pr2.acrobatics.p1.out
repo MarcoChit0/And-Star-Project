@@ -1,1 +1,0 @@
-timeout 5 bash -c 'ulimit -v 1073741824.0; (mkdir tmp-pr2.acrobatics.p1; cd tmp-pr2.acrobatics.p1; time pr2 /PROJECT/domain.pddl /PROJECT/problem.pddl; cd ..) > /PROJECT/RESULTS/pr2.acrobatics.p1.out 2>&1'; rm -rf tmp-pr2.acrobatics.p1

@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import os
-import tap
-import argcomplete
-import subprocess
 import resource
+import subprocess
 import time
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+import argcomplete
+import tap
 
 class ArgParsingNamespace(tap.Tap):
     domain_file_path: str
@@ -29,6 +28,10 @@ class ArgParsingNamespace(tap.Tap):
 apn = ArgParsingNamespace()
 argcomplete.autocomplete(apn)
 apn.parse_args()
+
+apn.domain_file_path = os.path.abspath(apn.domain_file_path)
+apn.problem_file_path = os.path.abspath(apn.problem_file_path)
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 def get_and_star_splitted_command() -> list[str]:
     global apn
