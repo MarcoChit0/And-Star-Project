@@ -1,6 +1,6 @@
 #include "./action.hpp"
 
-Action::Action(const str &name, const PartialState &precondition, const vec<PartialState> &effects, int cost)
+Action::Action(const str &name, const PartialState &precondition, const vec<vec<vec<std::pair<PartialState, Fact>>>> &effects, int cost)
 {
     this->id = ++last_used_id;
     this->name() = name;

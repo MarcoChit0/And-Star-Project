@@ -16,7 +16,7 @@ public:
     vec<Action> &get_applicable_actions(const vec<Action> &actions) const;
     bool can_receive_action(const Action &action) const;
     vec<State> &get_successors(const Action &action) const;
-    State get_successor(const PartialState &effect) const;
+    State get_successor(const vec<vec<std::pair<PartialState, Fact>>> &effect) const;
     State get_projection(const vec<bool> &mask) const;
     State canonized(const Task &task) const;
 

@@ -86,7 +86,7 @@ Task::Task(const str &domain_file_name, const str &task_file_name) : symmetries_
 
     str action_name;
     vec<Fact> action_precondition_true_facts;
-    vec<PartialState> action_effects;
+    vec<vec<vec<std::pair<PartialState, Fact>>>> action_effects;
     int action_cost;
     int number_of_actions_effects;
     sas >> number_of_actions_effects;
@@ -108,10 +108,9 @@ Task::Task(const str &domain_file_name, const str &task_file_name) : symmetries_
             }
             action_name = buffer;
             action_precondition_true_facts = vec<Fact>(number_of_variables);
-            action_effects = vec<PartialState>();
+            action_effects = vec<vec<vec<std::pair<PartialState, Fact>>>>();
             action_cost = NONE;
         }
-        vec<Fact> action_effect_true_facts = vec<Fact>(number_of_variables);
         int action_number_of_precondition_raw_facts;
         sas >> action_number_of_precondition_raw_facts;
         for (int _ = 0; _ < action_number_of_precondition_raw_facts; _++)
@@ -123,11 +122,21 @@ Task::Task(const str &domain_file_name, const str &task_file_name) : symmetries_
         }
         int action_effect_number_of_atomic_effects;
         sas >> action_effect_number_of_atomic_effects;
+        vec<vec<std::pair<PartialState, Fact>>> action_effect = vec<vec<std::pair<PartialState, Fact>>>(number_of_variables);
         for (int _ = 0; _ < action_effect_number_of_atomic_effects; _++)
         {
-            int action_effect_atomic_effect_condition_number_of_facts;
-            sas >> action_effect_atomic_effect_condition_number_of_facts;
-            assert(action_effect_atomic_effect_condition_number_of_facts == 0);
+            int atomic_effect_condition_number_of_facts;
+            sas >> atomic_effect_condition_number_of_facts;
+            // assert(atomic_effect_condition_number_of_facts == 0);
+            vec<Fact> atomic_effect_condition_true_facts = vec<Fact>(number_of_variables);
+            for (int _ = 0; _ < atomic_effect_condition_number_of_facts; _++)
+            {
+                int i;
+                sas >> i;
+                int j;
+                sas >> j;
+                atomic_effect_condition_true_facts[i] = this->variables()[i].facts()[j];
+            }
             int i;
             sas >> i;
             int j;
@@ -137,10 +146,10 @@ Task::Task(const str &domain_file_name, const str &task_file_name) : symmetries_
                 action_precondition_true_facts[i] = this->variables()[i].facts()[j];
             }
             sas >> j;
-            assert(action_effect_true_facts[i].is_none());
-            action_effect_true_facts[i] = this->variables()[i].facts()[j];
+            std::pair<PartialState, Fact> atomic_effect = {PartialState(atomic_effect_condition_true_facts), this->variables()[i].facts()[j]};
+            action_effect[i].push_back(atomic_effect);
         }
-        action_effects.emplace_back(action_effect_true_facts);
+        action_effects.push_back(action_effect);
         sas >> action_cost;
         if (not using_metric)
         {
@@ -178,13 +187,18 @@ void Task::compute_gagg(const opt<double> &opt_time_limit)
     {
         int j = i;
 
-        for (const PartialState &effect: action.effects())
+        for (const vec<vec<std::pair<PartialState, Fact>>> &effect: action.effects())
         {
-            for (const Fact &fact: effect.true_facts())
+            for (const vec<std::pair<PartialState, Fact>> &effect_cluster: effect)
             {
+                for (const std::pair<PartialState, Fact> &atomic_effect: effect_cluster)
+                {
+                    // TODO: Fix model for conditional effects.
+                    const Fact &fact = atomic_effect.second;
                 if (not fact.is_none())
                 {
                     graph_string += std::to_string(facts_vertices[fact]) + ","; // adds edge i -> facts_vertices[fact]
+                    }
                 }
             }
             graph_string += ";"; i++;

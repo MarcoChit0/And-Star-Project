@@ -12,10 +12,10 @@ public:
 
     str &name() const;
     PartialState &precondition() const;
-    vec<PartialState> &effects() const;
+    vec<vec<vec<std::pair<PartialState, Fact>>>> &effects() const;
     int &cost() const;
 
-    Action(const str &name, const PartialState &precondition, const vec<PartialState> &effects, int cost);
+    Action(const str &name, const PartialState &precondition, const vec<vec<vec<std::pair<PartialState, Fact>>>> &effects, int cost);
 
     friend std::ostream& operator<<(std::ostream &out, const Action &self);
 };

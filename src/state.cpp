@@ -36,7 +36,7 @@ vec<State> &State::get_successors(const Action &action) const
     if (not states_actions_successor_statess.contains(this->id) or not states_actions_successor_statess[this->id].contains(action.id))
     {
         vec<State> successors;
-        for (const PartialState &effect: action.effects())
+        for (const vec<vec<std::pair<PartialState, Fact>>> &effect: action.effects())
         {
             successors.push_back(this->get_successor(effect));
         }
@@ -45,38 +45,23 @@ vec<State> &State::get_successors(const Action &action) const
     return states_actions_successor_statess[this->id][action.id];
 }
 
-State State::get_successor(const PartialState &effect) const
+State State::get_successor(const vec<vec<std::pair<PartialState, Fact>>> &effect) const
 {
     vec<Fact> successor_true_facts = this->true_facts();
     mpz_class successor_hash = this->hash();
     int n = successor_true_facts.size();
     for (int i = 0; i < n; i++)
     {
-        if (not effect.true_facts()[i].is_none() and not this->true_facts()[i].is_none())
+        for (const std::pair<PartialState, Fact> &atomic_effect: effect[i])
         {
-            successor_true_facts[i] = effect.true_facts()[i];
-            successor_hash += successor_true_facts[i].hash() - this->true_facts()[i].hash();
+            if (this->does_model(atomic_effect.first))
+            {
+                successor_true_facts[i] = atomic_effect.second;
+                successor_hash += successor_true_facts[i].hash() - this->true_facts()[i].hash();
+            }
         }
     }
     return State(successor_true_facts, successor_hash);
-}
-
-State State::get_projection(const vec<bool> &mask) const
-{
-    vec<Fact> projection_true_facts;
-    int n = mask.size();
-    for (int i = 0; i < n; i++)
-    {
-        if (mask[i])
-        {
-            projection_true_facts.push_back(this->true_facts()[i]);
-        }
-        else
-        {
-            projection_true_facts.emplace_back();
-        }
-    }
-    return State(projection_true_facts);
 }
 
 State State::canonized(const Task &task) const

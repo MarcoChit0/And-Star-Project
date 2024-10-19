@@ -48,14 +48,19 @@ DeleteRelaxationHeuristic::DeleteRelaxationHeuristic(const Task &task) : Heurist
             actions_predecessor_facts[action].insert(start_fact);
         }
 
-        for (const PartialState &effect: action.effects())
+        // TODO: Split actions per effect.
+        for (const vec<vec<std::pair<PartialState, Fact>>> &effect: action.effects())
         {
-            for (const Fact &fact: effect.true_facts())
+            for (const vec<std::pair<PartialState, Fact>> &effect_cluster: effect)
             {
+                for (const std::pair<PartialState, Fact> &atomic_effect: effect_cluster)
+                {
+                    const Fact &fact = atomic_effect.second;
                 if (not fact.is_none())
                 {
                     facts_predecessor_actions[fact].insert(action);
                     actions_successor_facts[action].insert(fact);
+                    }
                 }
             }
         }

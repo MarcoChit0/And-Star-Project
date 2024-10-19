@@ -10,7 +10,7 @@
 
 map<Action, str> actions_names;
 map<Action, PartialState> actions_preconditions;
-map<Action, vec<PartialState>> actions_effectss;
+map<Action, vec<vec<vec<std::pair<PartialState, Fact>>>>> actions_effectss;
 map<Action, int> actions_costs;
 
 map<Fact, Variable> facts_variables;
@@ -42,7 +42,7 @@ PartialState &Action::precondition() const
     return actions_preconditions[*this];
 };
 
-vec<PartialState> &Action::effects() const
+vec<vec<vec<std::pair<PartialState, Fact>>>> &Action::effects() const
 {
     return actions_effectss[*this];
 };
